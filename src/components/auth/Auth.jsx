@@ -3,7 +3,7 @@ import './auth.css'
 import { toast } from 'react-toastify';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { upload } from '../../lib/upload';
 
 const Auth = () => {
@@ -40,7 +40,6 @@ const Auth = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setLoading(true)
     const formData = new FormData(e.target);
     const { username, email, password } = Object.fromEntries(formData);
     // VALIDATE INPUTS
@@ -55,6 +54,7 @@ const Auth = () => {
     if (!querySnapshot.empty) {
       return toast.warn("Select another username");
     }
+    setLoading(true)
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
